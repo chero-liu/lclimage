@@ -7,7 +7,7 @@ RUN cd /etc/yum.repos.d/ \
     && yum makecache
 RUN yum install which gcc gcc-c++ make -y
 
-COPY ../../Miniconda3-latest-Linux-x86_64.sh /opt/Miniconda3-latest-Linux-x86_64.sh
+COPY Miniconda3-latest-Linux-x86_64.sh /opt/Miniconda3-latest-Linux-x86_64.sh
 RUN bash /opt/Miniconda3-latest-Linux-x86_64.sh -p /opt/anaconda3 -b
 RUN rm /opt/Miniconda3-latest-Linux-x86_64.sh
 
@@ -24,21 +24,21 @@ RUN conda config --add channels https://mirrors.bfsu.edu.cn/anaconda/cloud/peter
 
 RUN conda init bash
 
-RUN conda create --name clscanpy python r-base conda-pack scanpy harmonypy rpy2 \
-    jupyterlab ipykernel scikit-misc louvain leidenalg scikit-image celltypist click
+RUN conda create --name clscanpy python r-base conda-pack scanpy harmonypy rpy2 scanorama gseapy \
+    jupyterlab ipykernel scikit-misc louvain leidenalg scikit-image celltypist click fastp lxml
 
 RUN /opt/anaconda3/envs/clscanpy/bin/pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
 
-COPY ../../DoubletDetection /tmp/DoubletDetection
+COPY DoubletDetection /tmp/DoubletDetection
 RUN cd /tmp/DoubletDetection && /opt/anaconda3/envs/clscanpy/bin/pip install . -i https://mirrors.bfsu.edu.cn/pypi/web/simple
 RUN rm -rf /tmp/DoubletDetection
 
-COPY ../../clscanpy /tmp/clscanpy
-RUN cd /tmp/clscanpy && /opt/anaconda3/envs/clscanpy/bin/pip install . -i https://mirrors.bfsu.edu.cn/pypi/web/simple
-RUN rm -rf /tmp/clscanpy
+# COPY ../../clscanpy /tmp/clscanpy
+# RUN cd /tmp/clscanpy && /opt/anaconda3/envs/clscanpy/bin/pip install . -i https://mirrors.bfsu.edu.cn/pypi/web/simple
+# RUN rm -rf /tmp/clscanpy
 
 ENV PATH /opt/anaconda3/envs/clscanpy/bin:$PATH
-COPY ../../lib/* /opt/anaconda3/envs/clscanpy/lib/
+COPY lib/* /opt/anaconda3/envs/clscanpy/lib/
 
 RUN /bin/bash -c "source activate clscanpy && conda install r-ggplot2 r-survival r-stringr r-stringi r-ggpubr r-irkernel r-dplyr r-tidyr r-tidyverse r-blme \
     -y && conda clean -ya"
@@ -54,9 +54,8 @@ RUN /bin/bash -c "source activate clscanpy && conda install r-nortest r-lambda.r
     -y && conda clean -ya"
 RUN /bin/bash -c "source activate clscanpy && conda install r-snow r-getoptlong r-clue r-locfit r-ggbeeswarm r-rcppml r-ggrastr  r-rhpcblasctl r-remacor r-aod r-rdpack \
     -y && conda clean -ya"
-RUN /bin/bash -c "source activate clscanpy && conda install r-optparse r-gghalves r-reticulate r-argparser r-radar r-ggthemes scanorama==1.7.4 \
+RUN /bin/bash -c "source activate clscanpy && conda install r-optparse r-gghalves r-reticulate r-argparser r-radar r-ggthemes  \
     -y && conda clean -ya"
-
 
 RUN R -e "options(repos = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));install.packages('FactoMineR')"
 RUN R -e "options(repos = c(CRAN='https://mirrors.tuna.tsinghua.edu.cn/CRAN/'));install.packages('factoextra')"
@@ -64,14 +63,15 @@ RUN R -e "devtools::install_github('mojaveazure/seurat-disk', upgrade = 'never')
 RUN R -e "options(BioC_mirror='https://mirrors.westlake.edu.cn/bioconductor');BiocManager::install(c('XVector'), ask=FALSE, update = FALSE)"
 RUN R -e "options(BioC_mirror='https://mirrors.westlake.edu.cn/bioconductor');BiocManager::install(c('ComplexHeatmap'), ask=FALSE, update = FALSE)"
 RUN R -e "options(BioC_mirror='https://mirrors.westlake.edu.cn/bioconductor');BiocManager::install(c('monocle'), ask=FALSE, update = FALSE)"
+RUN R -e "options(BioC_mirror='https://mirrors.westlake.edu.cn/bioconductor');BiocManager::install(c('biomaRt'), ask=FALSE, update = FALSE)"
 RUN R -e "devtools::install_github('PaulingLiu/ROGUE', upgrade = 'never')"
 
 
-# COPY ../../pySCENIC /tmp/pySCENIC
+# COPY pySCENIC /tmp/pySCENIC
 # RUN cd /tmp/pySCENIC && /opt/anaconda3/envs/clscanpy/bin/pip install . -i https://mirrors.bfsu.edu.cn/pypi/web/simple
 # RUN rm -rf /tmp/pySCENIC
 
-COPY ../../pySCENIC /tmp/pySCENIC
+COPY pySCENIC /tmp/pySCENIC
 RUN /bin/bash -c "source activate clscanpy && \
     pip install numpy==1.26.4 pyarrow==14.0.1 ctxcore==0.2.0 -i https://mirrors.bfsu.edu.cn/pypi/web/simple && \
     cd /tmp/pySCENIC && pip install . -i https://mirrors.bfsu.edu.cn/pypi/web/simple"
