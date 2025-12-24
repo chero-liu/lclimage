@@ -65,6 +65,8 @@ RUN R -e "options(BioC_mirror='https://mirrors.westlake.edu.cn/bioconductor');Bi
 RUN R -e "options(BioC_mirror='https://mirrors.westlake.edu.cn/bioconductor');BiocManager::install(c('monocle'), ask=FALSE, update = FALSE)"
 RUN R -e "options(BioC_mirror='https://mirrors.westlake.edu.cn/bioconductor');BiocManager::install(c('biomaRt'), ask=FALSE, update = FALSE)"
 RUN R -e "devtools::install_github('PaulingLiu/ROGUE', upgrade = 'never')"
+RUN R -e "options(BioC_mirror='https://mirrors.westlake.edu.cn/bioconductor');BiocManager::install(c('SummarizedExperiment'), ask=FALSE, update = FALSE)"
+RUN R -e "options(BioC_mirror='https://mirrors.westlake.edu.cn/bioconductor');BiocManager::install(c('SingleCellExperiment'), ask=FALSE, update = FALSE)"
 
 
 # COPY pySCENIC /tmp/pySCENIC
