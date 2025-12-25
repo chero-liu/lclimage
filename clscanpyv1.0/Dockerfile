@@ -68,11 +68,6 @@ RUN R -e "devtools::install_github('PaulingLiu/ROGUE', upgrade = 'never')"
 RUN R -e "options(BioC_mirror='https://mirrors.westlake.edu.cn/bioconductor');BiocManager::install(c('SummarizedExperiment'), ask=FALSE, update = FALSE)"
 RUN R -e "options(BioC_mirror='https://mirrors.westlake.edu.cn/bioconductor');BiocManager::install(c('SingleCellExperiment'), ask=FALSE, update = FALSE)"
 
-
-# COPY pySCENIC /tmp/pySCENIC
-# RUN cd /tmp/pySCENIC && /opt/anaconda3/envs/clscanpy/bin/pip install . -i https://mirrors.bfsu.edu.cn/pypi/web/simple
-# RUN rm -rf /tmp/pySCENIC
-
 COPY pySCENIC /tmp/pySCENIC
 RUN /bin/bash -c "source activate clscanpy && \
     pip install numpy==1.26.4 pyarrow==14.0.1 ctxcore==0.2.0 -i https://mirrors.bfsu.edu.cn/pypi/web/simple && \
@@ -91,3 +86,4 @@ RUN rm -rf /tmp/pySCENIC
 # docker run -it -v /home/chenglong.liu/:/home/chenglong.liu/ -v /gpfs/oe-database/:/gpfs/oe-database/   -v  /data/database:/data/database  -v /gpfs/oe-scrna/:/gpfs/oe-scrna/ harbor.oebiotech.com/oedocker/clscanpy:clscanpy
 
 RUN conda clean -ya && /opt/anaconda3/envs/clscanpy/bin/pip cache purge && yum clean all && rm -rf /var/cache/yum
+
